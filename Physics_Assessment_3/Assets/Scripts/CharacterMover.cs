@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class CharacterMover : MonoBehaviour
 {
     public float speed = 10;
-    public float jumpVelocity = 12;
+    public float jumpHeight = 12;
+    public float gravity;
     public Vector3 velocity;
 
     CharacterController cc;
@@ -19,6 +19,7 @@ public class CharacterMover : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         cam = Camera.main.transform;
+        gravity = -Physics.gravity.y;
     }
 
     void Update()
@@ -51,9 +52,12 @@ public class CharacterMover : MonoBehaviour
             velocity.z = delta.z;
         }
 
+        // rotate the render component according to the camera in turn affecting beta's rotation.
+        transform.forward = camForward;
+
         // check for jumping
         if (jumpInput && isGrounded)
-            velocity.y = jumpVelocity;
+            velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
 
         // check if we've hit ground from falling. If so, remove our velocity
         if (isGrounded && velocity.y < 0)
