@@ -9,7 +9,10 @@ public class CharacterMover : MonoBehaviour
     public float gravity;
     public Vector3 velocity;
 
+   // public GameObject projectilePrefab;
+
     CharacterController cc;
+    Animator animator;
     Transform cam;
     Vector2 moveInput = new Vector2();
     public bool jumpInput;
@@ -18,6 +21,7 @@ public class CharacterMover : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
         cam = Camera.main.transform;
         gravity = -Physics.gravity.y;
     }
@@ -28,6 +32,9 @@ public class CharacterMover : MonoBehaviour
         moveInput.x = Input.GetAxis("Horizontal");
         moveInput.y = Input.GetAxis("Vertical");
         jumpInput = Input.GetButton("Jump");
+
+        animator.SetFloat("Forwards", moveInput.y);
+        animator.SetBool("Jump", !isGrounded);
     }
 
     void FixedUpdate()
