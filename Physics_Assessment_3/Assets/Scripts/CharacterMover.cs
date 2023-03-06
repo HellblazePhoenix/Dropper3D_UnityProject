@@ -1,22 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+//TODO:
+//1. Add RayCast for bouncepad and future interactions as well as an interact key.
+//2. Add a max fall speed and clamp in fixed update.
+//3. Find sideways moving animations.
+//4. find a way to play the forward animation backwards and use that for backwards movement.
 
 public class CharacterMover : MonoBehaviour
 {
+    //physics ______________________
     public float speed = 10;
     public float jumpHeight = 12;
     public float gravity;
+    public float mass = 200;
     public Vector3 velocity;
+    Vector2 moveInput = new Vector2();
+    public Vector3 hitDirection;
 
-   // public GameObject projectilePrefab;
-
+    // Components and objects _______________
+    // public GameObject projectilePrefab;
     CharacterController cc;
     Animator animator;
     Transform cam;
-    Vector2 moveInput = new Vector2();
+
+    // bools ______________________
     public bool jumpInput;
     public bool isGrounded = true;
+    
 
     void Start()
     {
@@ -78,7 +88,30 @@ public class CharacterMover : MonoBehaviour
         delta += velocity * Time.fixedDeltaTime;
         // I don't see how this is better the code already had air control due to not restricting horizontal movement all that has been 
         //done is to shift the values in delta into velocity every fixed frame.
+
+        if (!isGrounded)
+            hitDirection = Vector3.zero;
+
+        // slide objects off surfaces they're hanging on to
+        if (moveInput.x == 0 && moveInput.y == 0)
+        {
+            Vector3 horizontalHitDirection = hitDirection;
+            horizontalHitDirection.y = 0;
+            float displacement = horizontalHitDirection.magnitude;
+            if (displacement > 0)
+                velocity -= 0.2f * horizontalHitDirection / displacement;
+        }
+
         cc.Move(velocity * Time.deltaTime);
         isGrounded = cc.isGrounded;
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        hitDirection = hit.point - transform.position;
+        if (hit.rigidbody)
+        {
+            hit.rigidbody.AddForceAtPosition(velocity * mass, hit.point);
+        }
     }
 }

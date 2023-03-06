@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO:
+// 1. Polish the camera control fix the issue of being unable to look up
+
 public class CameraController : MonoBehaviour
 {
     public Transform target;

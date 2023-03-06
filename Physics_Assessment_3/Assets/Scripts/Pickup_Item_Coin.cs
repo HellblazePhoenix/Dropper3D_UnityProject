@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO:
+// 1. Add an OnCollision event trigger for the player that brings up a win screen with the options to play again or quit.
+
 public class Pickup_Item_Coin : MonoBehaviour
 {
     Transform spin;
