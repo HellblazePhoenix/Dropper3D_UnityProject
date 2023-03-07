@@ -9,7 +9,7 @@ public class Pickup_Item_Coin : MonoBehaviour
 {
     Transform spin;
 
-    float smooth = 5.0f;
+
     public float spinSpeed = 60.0f;
     // Start is called before the first frame update
     void Start()
@@ -21,6 +21,5 @@ public class Pickup_Item_Coin : MonoBehaviour
     void Update()
     {
         spin.rotation = Quaternion.AngleAxis(Time.realtimeSinceStartup * spinSpeed, Vector3.up);
-       // spin.rotation = Quaternion.Slerp(spin.rotation, spin.rotation +  , Time.deltaTime * smooth);
     }
 }
