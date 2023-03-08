@@ -8,6 +8,7 @@ using UnityEngine;
 public class Pickup_Item_Coin : MonoBehaviour
 {
     Transform spin;
+    public Canvas GameEndUI;
 
 
     public float spinSpeed = 60.0f;
@@ -21,5 +22,10 @@ public class Pickup_Item_Coin : MonoBehaviour
     void Update()
     {
         spin.rotation = Quaternion.AngleAxis(Time.realtimeSinceStartup * spinSpeed, Vector3.up);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        GameEndUI.gameObject.SetActive(true);
     }
 }

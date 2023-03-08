@@ -11,6 +11,7 @@ public class CharacterMover : MonoBehaviour
     //physics ______________________
     public float speed = 10;
     public float jumpHeight = 12;
+    public float bouncePadHeight = 100;
     public float gravity;
     public float mass = 200;
     public Vector3 velocity;
@@ -23,10 +24,13 @@ public class CharacterMover : MonoBehaviour
     Animator animator;
     Transform cam;
 
+    // special functions_________________
+    public string footingTag = null; // this is public for viewing and testing purposes only.
+
     // bools ______________________
     public bool jumpInput;
     public bool isGrounded = true;
-    
+
 
     void Start()
     {
@@ -45,6 +49,11 @@ public class CharacterMover : MonoBehaviour
 
         animator.SetFloat("Forwards", moveInput.y);
         animator.SetBool("Jump", !isGrounded);
+
+        // uses a raycast from the player position down to get the physics material
+        RaycastHit hitInfo;
+        Physics.Raycast(transform.position, Vector3.down, out hitInfo);
+        footingTag = hitInfo.collider.tag;
     }
 
     void FixedUpdate()
@@ -73,8 +82,20 @@ public class CharacterMover : MonoBehaviour
         transform.forward = camForward;
 
         // check for jumping
+
+
+
         if (jumpInput && isGrounded)
-            velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
+        {
+            bool bounce = false;
+            if (footingTag == "Bounce_Pad" && !bounce) // A physics material is apparently not equal to an instance of that material so convoluted solution it is.
+            {
+                velocity.y = Mathf.Sqrt(2 * bouncePadHeight * gravity);
+                bounce = true;
+            }
+            else
+                velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
+        }
 
         // check if we've hit ground from falling. If so, remove our velocity
         if (isGrounded && velocity.y < 0)
@@ -90,7 +111,9 @@ public class CharacterMover : MonoBehaviour
         //done is to shift the values in delta into velocity every fixed frame.
 
         if (!isGrounded)
-            hitDirection = Vector3.zero;
+           hitDirection = Vector3.zero;
+
+
 
         // slide objects off surfaces they're hanging on to
         if (moveInput.x == 0 && moveInput.y == 0)

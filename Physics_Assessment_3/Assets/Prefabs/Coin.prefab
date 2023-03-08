@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7206515547507456518}
   - component: {fileID: 159315150714080160}
+  - component: {fileID: -6585985088308856702}
+  - component: {fileID: 1481007350809980841}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -45,7 +47,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e30f8278cea404419a08acce64e84a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameEndUI: {fileID: 0}
   spinSpeed: 60
+--- !u!136 &-6585985088308856702
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179498378615461027}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1481007350809980841
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179498378615461027}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &9221207518734551485
 GameObject:
   m_ObjectHideFlags: 0
