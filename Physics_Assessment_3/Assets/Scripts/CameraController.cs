@@ -4,16 +4,31 @@ using UnityEngine;
 
 // TODO:
 // 1. Polish the camera control fix the issue of being unable to look up
+// 2. allow the camera to ignore the player hit boxes. Achieved by using Unity's layers system to only raycast on the default layer
 
 public class CameraController : MonoBehaviour
 {
     public Transform target;
 
+    Camera cam;
+    public float force = 1000;
     public float speed = 1000;
     public float distance = 10;
     public float heightOffset;
     public float currentDistance;
     public float cDistToDistSpeed = 2;
+    int layerMaskRagdolls;
+    int layerMaskDefault;
+
+    private void Start()
+    {
+        cam = GetComponent<Camera>();
+        string[] layers1 = { "Ragdoll" };
+        layerMaskRagdolls = LayerMask.GetMask(layers1);
+        string[] layers2 = { "Default" };
+        layerMaskDefault = LayerMask.GetMask(layers2);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -32,7 +47,7 @@ public class CameraController : MonoBehaviour
         
         
         RaycastHit hit;
-        if (Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, distance))
+        if (Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, distance, layerMaskDefault))
         {
             // snap the camera right in to where the collision happenedl
             currentDistance = hit.distance;
@@ -44,6 +59,21 @@ public class CameraController : MonoBehaviour
         }
 
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hitRag;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hitRag, Mathf.Infinity, layerMaskRagdolls))
+            {
+                CharacterMover ragdoll = hitRag.collider.GetComponentInParent<CharacterMover>();
+                if (ragdoll)
+                    ragdoll.ragdollActive = true;
+
+                Rigidbody body = hitRag.collider.GetComponent<Rigidbody>();
+                if (body)
+                    body.AddForce(ray.direction * force);
+            }
+        }
 
         // look at the target point
         transform.position = GetTargetPosition() - currentDistance * transform.forward;
