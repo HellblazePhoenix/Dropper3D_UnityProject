@@ -53,13 +53,13 @@ public class CharacterMover : MonoBehaviour
 
     void Start()
     {
-        
+
         cc = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
         cam = Camera.main.transform;
         gravity = -Physics.gravity.y;
         ragdollActive = false;
-    } 
+    }
 
 
     void Update()
@@ -73,9 +73,9 @@ public class CharacterMover : MonoBehaviour
         animator.SetBool("Jump", !isGrounded);
 
         // uses a raycast from the player position down to get the physics material
-        
+
         RaycastHit hitInfo;
-        Physics.Raycast(transform.position, Vector3.down, out hitInfo,10, footCollideMask);
+        Physics.Raycast(transform.position, Vector3.down, out hitInfo, 10, footCollideMask);
         if (hitInfo.collider != null)
         {
             footingTag = hitInfo.collider.tag;
@@ -109,11 +109,16 @@ public class CharacterMover : MonoBehaviour
             // rotate the render component according to the camera in turn affecting beta's rotation.
             transform.forward = camForward;
 
-            // check for jumping
+            // check to see if we're on a moving platform
+            if (footingTag == "Moving_Platform")
+            {
+                RaycastHit hitInfo;
+                Physics.Raycast(transform.position, Vector3.down, out hitInfo, 10, footCollideMask);
+                if (hitInfo.collider != null && hitInfo.collider.GetComponent<Moving_Platform>())
+                    velocity += hitInfo.collider.GetComponent<Moving_Platform>().velocity * Time.deltaTime;
+            }
 
-
-
-            if (jumpInput && isGrounded)
+            if (jumpInput && isGrounded) // check for jumping
             {
                 bool bounce = false;
                 if (footingTag == "Bounce_Pad" && !bounce) // A physics material is apparently not equal to an instance of that material so convoluted solution it is.
@@ -140,8 +145,6 @@ public class CharacterMover : MonoBehaviour
 
             if (!isGrounded)
                 hitDirection = Vector3.zero;
-
-
 
             // slide objects off surfaces they're hanging on to
             if (moveInput.x == 0 && moveInput.y == 0)
